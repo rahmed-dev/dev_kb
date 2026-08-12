@@ -26,6 +26,12 @@ the entire point. Specifics live there and are referenced from generic notes.
 If a lesson genuinely cannot be stated without naming one framework, it is a framework quirk. Those go
 in `case-studies/` too, under the codebase or vendor that owns the quirk.
 
+`frappe/` is the second exception, and a different kind: it holds **runnable snippets** — Server
+Script bodies, console one-offs — plus notes on framework behaviour. Code that gets pasted into a
+live site is not a note and cannot be rewritten as one; see `frappe/README.md`. Nothing generic goes
+in there, and a lesson from it that *does* generalise is written as a proper note elsewhere, citing
+`frappe/` as its evidence.
+
 ## What does not belong
 
 - Project status, roadmaps, TODOs, feature specs
@@ -46,6 +52,7 @@ frontend/
   coding/              client-side craft: component conventions, style, structure
 practices/             cross-cutting: testing, extensibility, docs, workflow
 case-studies/          teardowns of real codebases — the evidence generic notes cite
+frappe/                runnable Frappe/ERPNext snippets + framework notes — NOT knowledge notes
 ```
 
 ### Where does it go?
@@ -58,6 +65,7 @@ case-studies/          teardowns of real codebases — the evidence generic note
 | Runs in a browser or a build step | `frontend/` |
 | Applies to both sides, or to neither — process, testing, docs | `practices/` |
 | Observed while reading someone else's codebase | `case-studies/` |
+| Code to paste into a Frappe site, or how the framework itself behaves | `frappe/` |
 
 Two plausible homes means the note is two notes. Split it.
 

@@ -1,0 +1,67 @@
+# System Console — bulk delete docs together with their Workflow Actions.
+#
+# DESTRUCTIVE and PERMANENT: `delete_permanently=True` leaves no Deleted Document
+# row to restore from. Run it against a restored copy first, and read the count
+# it prints in Step 1 before enabling Commit.
+#
+# REMEMBER: enable the "Commit" toggle, or nothing is written and it looks like
+# the script silently did nothing.
+#
+# Workflow Actions go first because they hold a Link to the parent: deleting the
+# parent alone fails on the link check, one document at a time, with an error
+# that names the Workflow Action rather than the cause.
+
+target_doctype = "Some Doctype"  # set me
+target_filters = {}  # empty = ALL records of that doctype
+
+# Step 1: Get the target docs
+docs = frappe.db.get_all(target_doctype, filters=target_filters, pluck="name")
+print(f"Found {len(docs)} {target_doctype} records to process")
+
+deleted_wf_actions = 0
+deleted_docs = 0
+errors = []
+
+for docname in docs:
+    try:
+        # Step 2: Delete linked Workflow Actions first
+        wf_actions = frappe.db.get_all(
+            "Workflow Action",
+            filters={
+                "reference_doctype": target_doctype,
+                "reference_name": docname
+            },
+            pluck="name"
+        )
+        
+        for wfa in wf_actions:
+            frappe.delete_doc(
+                "Workflow Action",
+                wfa,
+                force=1,
+                ignore_permissions=True,
+                ignore_on_trash=True,
+                delete_permanently=True
+            )
+            deleted_wf_actions += 1
+        
+        # Step 3: Delete the parent doc
+        frappe.delete_doc(
+            target_doctype,
+            docname,
+            force=1,
+            ignore_permissions=True,
+            ignore_on_trash=True,
+            delete_permanently=True
+        )
+        deleted_docs += 1
+        
+    except Exception as e:
+        errors.append(f"{docname}: {str(e)}")
+
+print(f"Deleted {deleted_wf_actions} Workflow Actions")
+print(f"Deleted {deleted_docs} {target_doctype} records")
+if errors:
+    print(f"Errors ({len(errors)}):")
+    for err in errors:
+        print(err)

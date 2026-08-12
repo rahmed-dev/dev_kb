@@ -35,3 +35,14 @@ Notes are framework-agnostic. Framework specifics live in `case-studies/`, cited
 ## Case studies
 - [Frappe CRM](./case-studies/frappe-crm.md) — v1.79.1. Fat records, schema-driven reads, a dogfooded
   scripting seam, a 1586-line form engine.
+
+## Frappe
+
+Runnable snippets and framework notes — **not** knowledge notes, and the one place exempt from the
+note format. See [frappe/README.md](./frappe/README.md) before pasting anything.
+
+- [Server scripts](./frappe/server_scripts/) — auto-attendance nightly job; auto-checkout diagnostic.
+- [Console scripts](./frappe/console_scripts/) — bulk delete with linked Workflow Actions.
+  **Destructive and permanent.**
+- [Desktop icons in v16](./frappe/notes/desktop-icons-v16.md) — where the icon actually comes from,
+  and why `label` being the primary key bites.
